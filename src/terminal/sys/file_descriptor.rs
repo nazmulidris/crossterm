@@ -145,8 +145,10 @@ pub fn tty_fd() -> io::Result<FileDesc<'static>> {
 
     let stdin = rustix::stdio::stdin();
     let fd = if rustix::termios::isatty(stdin) {
+        println!("🍎 isatty(stdin) == true, use stdin");
         FileDesc::Borrowed(stdin)
     } else {
+        println!("🍎 isatty(stdin) == false, open /dev/tty");
         let dev_tty = File::options().read(true).write(true).open("/dev/tty")?;
         FileDesc::Owned(dev_tty.into())
     };
