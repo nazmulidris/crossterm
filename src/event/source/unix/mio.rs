@@ -42,6 +42,11 @@ impl UnixInternalEventSource {
         let registry = poll.registry();
 
         let tty_raw_fd = input_fd.raw_fd();
+        println!(
+            "🍎 registering this w/ mio::Poll tty_raw_fd: {:?}",
+            tty_raw_fd
+        );
+
         let mut tty_ev = SourceFd(&tty_raw_fd);
         registry.register(&mut tty_ev, TTY_TOKEN, Interest::READABLE)?;
 
@@ -100,6 +105,7 @@ impl EventSource for UnixInternalEventSource {
                                             &self.tty_buffer[..read_count],
                                             read_count == TTY_BUFFER_SIZE,
                                         );
+                                        println!("🍎 read_count: {:?}", read_count);
                                     }
                                 }
                                 Err(e) => {
@@ -219,6 +225,7 @@ impl Parser {
         }
     }
 }
+
 
 impl Iterator for Parser {
     type Item = InternalEvent;
